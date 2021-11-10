@@ -2,15 +2,15 @@
 [Network]
   # The address of the server, including the port. The server will be listening on this address. If another
   # server is already running on this port, please select a different port.
-  Address = ":19132"
+  Address = "play.zwrld.tk:19132"
 
 [Server]
   # The name as it shows up in the server list. Minecraft colour codes may be used in this name to format the
   # name of the server.
-  Name = "Dragonfly Server"
+  Name = "ZWrld"
   # The message shown to players when the server is shutting down. The message may be left empty to direct
   # players to the server list directly.
-  ShutdownMessage = "Server closed."
+  ShutdownMessage = "The server has shutdown or closed! Please wait 30 minutes the try joining."
   # AuthEnabled controls whether or not players must be connected to Xbox Live in order to join the server.
   AuthEnabled = true
   # JoinMessage is the message that appears when a player joins the server. Leave this empty to disable it.
