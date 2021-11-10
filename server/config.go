@@ -59,9 +59,9 @@ type Config struct {
 // DefaultConfig returns a configuration with the default values filled out.
 func DefaultConfig() Config {
 	c := Config{}
-	c.Network.Address = ":19132"
-	c.Server.Name = "Dragonfly Server"
-	c.Server.ShutdownMessage = "Server closed."
+	c.Network.Address = "play.zwrld.tk:19132"
+	c.Server.Name = "ZWrld"
+	c.Server.ShutdownMessage = "The server has shutdown or closed! Please wait 30 minutes then try joining again."
 	c.Server.AuthEnabled = true
 	c.Server.JoinMessage = "%v has joined the game"
 	c.Server.QuitMessage = "%v has left the game"
