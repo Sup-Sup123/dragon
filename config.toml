@@ -10,7 +10,7 @@
   Name = "ZWrld"
   # The message shown to players when the server is shutting down. The message may be left empty to direct
   # players to the server list directly.
-  ShutdownMessage = "The server has shutdown or closed! Please wait 30 minutes the try joining."
+  ShutdownMessage = "The server has shutdown or closed! Please wait 30 minutes then try joining again."
   # AuthEnabled controls whether or not players must be connected to Xbox Live in order to join the server.
   AuthEnabled = true
   # JoinMessage is the message that appears when a player joins the server. Leave this empty to disable it.
