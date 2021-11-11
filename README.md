@@ -10,20 +10,20 @@ Minecraft server software, Dragonfly is generally used as a library to extend.
 
 ## Getting started
 Running Dragonfly requires at least **Go 1.16**. After starting the server through one of the methods below,
-**ctrl+c** may be used to shut down the server. Also check out the [wiki](https://github.com/df-mc/dragonfly/wiki) for
+**ctrl+c** may be used to shut down the server. Also check out the [wiki](https://github.com/B-Z-Web-Developing-Inc/dragonfly/wiki) for
 more detailed info.
 
 #### Installation as library
 ```
 go mod init github.com/<user>/<module name>
-go get github.com/df-mc/dragonfly
+go get github.com/B-Z-Web-Developing-Inc/dragonfly
 ```
 
 ![SetupLibrary](https://user-images.githubusercontent.com/16114089/121804512-0f843900-cc47-11eb-9320-d195393b5a1f.gif)
 
 #### Installation of the latest commit
 ```
-git clone https://github.com/df-mc/dragonfly
+git clone https://github.com/B-Z-Web-Developing-Inc/dragonfly
 cd dragonfly
 go run main.go
 ```
