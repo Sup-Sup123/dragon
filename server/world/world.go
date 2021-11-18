@@ -332,8 +332,8 @@ func (w *World) BuildStructure(pos cube.Pos, s Structure) {
 	width, height, length := dim[0], dim[1], dim[2]
 	maxX, maxY, maxZ := pos[0]+width, pos[1]+height, pos[2]+length
 
-	for chunkX := pos[0] >> 4; chunkX < (maxX>>4)+1; chunkX++ {
-		for chunkZ := pos[2] >> 4; chunkZ < (maxZ>>4)+1; chunkZ++ {
+	for chunkX := pos[0] >> 4; chunkX <= maxX>>4; chunkX++ {
+		for chunkZ := pos[2] >> 4; chunkZ <= maxZ>>4; chunkZ++ {
 			// We approach this on a per-chunk basis, so that we can keep only one chunk in memory at a time
 			// while not needing to acquire a new chunk lock for every block. This also allows us not to send
 			// block updates, but instead send a single chunk update once.
@@ -344,23 +344,23 @@ func (w *World) BuildStructure(pos cube.Pos, s Structure) {
 				continue
 			}
 			f := func(x, y, z int) Block {
-				actualX, actualZ := chunkX+x, chunkZ+z
+				actualX, actualY, actualZ := pos[0]+x, pos[1]+y, pos[2]+z
 				if actualX>>4 == chunkX && actualZ>>4 == chunkZ {
-					b, _ := w.blockInChunk(c, cube.Pos{actualX, y, actualZ})
+					b, _ := w.blockInChunk(c, cube.Pos{actualX, actualY, actualZ})
 					return b
 				}
-				return w.Block(cube.Pos{actualX, y, actualZ})
+				return w.Block(cube.Pos{actualX, actualY, actualZ})
 			}
 			baseX, baseZ := chunkX<<4, chunkZ<<4
 			subs := c.Sub()
 			for i, sub := range subs {
-				baseY := i << 4
+				baseY := (i + (cube.MinY >> 4)) << 4
 				if sub == nil {
 					c.SetRuntimeID(0, int16(baseY), 0, 0, airRID)
 					sub = subs[i]
 				}
 
-				if i < pos[1]>>4 {
+				if baseY>>4 < pos[1]>>4 {
 					continue
 				} else if baseY >= maxY {
 					break
@@ -400,8 +400,6 @@ func (w *World) BuildStructure(pos cube.Pos, s Structure) {
 								} else {
 									delete(c.e, pos)
 								}
-							} else {
-								sub.SetRuntimeID(uint8(xOffset), uint8(yOffset), uint8(zOffset), 0, airRID)
 							}
 							if liq != nil {
 								rid, ok := BlockRuntimeID(liq)
@@ -1390,7 +1388,7 @@ func (w *World) tickRandomBlocks(viewers []Viewer, tick int64) {
 		for j := uint32(0); j < tickSpeed; j++ {
 			generateNew := true
 			var x, y, z uint8
-			for subY, sub := range subChunks {
+			for i, sub := range subChunks {
 				if sub == nil {
 					// No sub chunk present, so skip it right away.
 					continue
@@ -1401,15 +1399,13 @@ func (w *World) tickRandomBlocks(viewers []Viewer, tick int64) {
 					continue
 				}
 				layer := layers[0]
-				p := layer.Palette()
-				if p.Len() == 1 && p.RuntimeID(0) == airRID {
+				if p := layer.Palette(); p.Len() == 1 && p.RuntimeID(0) == airRID {
 					// Empty layer present, so skip it right away.
 					continue
 				}
 				if generateNew {
 					x, y, z = g.uint4(w.r), g.uint4(w.r), g.uint4(w.r)
 				}
-
 				// Generally we would want to make sure the block has its block entities, but provided blocks
 				// with block entities are generally ticked already, we are safe to assume that blocks
 				// implementing the RandomTicker don't rely on additional block entity data.
@@ -1420,7 +1416,8 @@ func (w *World) tickRandomBlocks(viewers []Viewer, tick int64) {
 				}
 
 				if randomTickBlocks[rid] {
-					w.toTick = append(w.toTick, toTick{b: blocks[rid].(RandomTicker), pos: cube.Pos{cx + int(x), subY<<4 + int(y), cz + int(z)}})
+					subY := (i + (cube.MinY >> 4)) << 4
+					w.toTick = append(w.toTick, toTick{b: blocks[rid].(RandomTicker), pos: cube.Pos{cx + int(x), subY + int(y), cz + int(z)}})
 					generateNew = true
 					continue
 				}
